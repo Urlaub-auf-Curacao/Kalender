@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #2b2a28;
+    background: transparent;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  .bp-karte {
+    background: #faf8f4;
+    border: 1px solid #e6e1d8;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 420px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .bp-kopf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  .bp-nav {
+    background: #fff;
+    border: 1px solid #d9d4cb;
+    color: #2b2a28;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .bp-nav:hover:not(:disabled) {
+    border-color: #1f6f78;
+    color: #1f6f78;
+    background: #d6ebec;
+  }
+  .bp-nav:disabled { opacity: 0.3; cursor: default; }
+  .bp-titel {
+    font-weight: 600;
+    font-size: 16px;
+    text-align: center;
+    flex: 1;
+  }
+  .bp-monat { background: #fff; border: 1px solid #e6e1d8; border-radius: 8px; padding: 15px; }
+  .bp-monatsname { font-weight: 600; text-align: center; margin: 0 0 12px; font-size: 15px; color: #1f6f78; }
+  .bp-wt-leiste { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .bp-wt { font-size: 11px; text-transform: uppercase; color: #6f6c66; text-align: center; flex: 1; font-weight: 600; }
+  .bp-raster { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+  .bp-tag {
+    aspect-ratio: 1 / 1;
+    border: 1px solid #d9d4cb;
+    background: #ffffff;
+    color: #2b2a28;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+  }
+  .bp-tag.bp-frei:hover { border-color: #1f6f78; background: #d6ebec; color: #1f6f78; }
+  .bp-leer { visibility: hidden; border: none; background: transparent; }
+  .bp-tag.bp-belegt { background: #c4513a; border-color: #c4513a; color: #fff; cursor: not-allowed; }
+  .bp-tag.bp-vergangen { background: #f4f2ee; border-color: transparent; color: #b8b3a8; cursor: default; }
+  .bp-tag.bp-heute { border-color: #1f6f78; font-weight: 700; }
+  .bp-tag.bp-auswahl { background: #1f6f78; border-color: #1f6f78; color: #fff; font-weight: 700; }
+  .bp-legende { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; font-size: 13px; color: #6f6c66; justify-content: center; }
+  .bp-legende span { display: inline-flex; align-items: center; gap: 6px; }
+  .bp-legende i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid #d9d4cb; }
+  .bp-form { margin-top: 15px; background: #faf8f4; border: 1px solid #e6e1d8; border-radius: 10px; padding: 15px; }
+  .bp-form h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #2b2a28; }
+  .bp-zeitraum { display: flex; gap: 10px; margin-bottom: 12px; }
+  .bp-zeitraum div { flex: 1; background: #fff; border: 1px solid #e6e1d8; border-radius: 6px; padding: 8px 10px; }
+  .bp-zeitraum small { display: block; font-size: 10px; text-transform: uppercase; color: #6f6c66; margin-bottom: 2px; }
+  .bp-zeitraum strong { font-size: 13px; color: #2b2a28; }
+  .bp-felder { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .bp-voll { grid-column: 1 / -1; }
+  label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #2b2a28; }
+  input[type=text], input[type=email], input[type=number], textarea {
+    width: 100%; font: inherit; font-size: 13px; color: #2b2a28; background: #fff; border: 1px solid #d9d4cb; border-radius: 6px; padding: 8px; box-sizing: border-box;
+  }
+  textarea { min-height: 70px; resize: vertical; }
+  .bp-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; overflow: hidden; }
+  .bp-btn { background: #1f6f78; color: #fff; border: none; border-radius: 6px; padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
+  .bp-btn:hover:not(:disabled) { background: #17535b; }
+  .bp-meldung { margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 13px; }
+  .bp-meldung.bp-ok { background: #e4f1e6; color: #1d5b2b; }
+  .bp-meldung.bp-err { background: #f8e3de; color: #8c2f1c; }
+</style>
+</head>
+<body>
+
+<div id="bp-belegungsplan">Lade Belegungsplan...</div>
+
+<script>
+(function () {
+  var CONFIG = {
+    API_URL: "https://script.google.com/macros/s/AKfycbwLXOVlY7Mnco5s-jEmB-OvHTs0dFMAg9CSyFDsG8rbOlk_IJuRhqN0-yfTa41BTpYb-Q/exec",
+    MONATE_VORAUS: 18,
+    MIN_NAECHTE: 1,
+    MAX_PERSONEN: 8,
+    TEXT_TITEL: "Unverbindlich anfragen",
+    TEXT_DANKE: "Vielen Dank für Ihre Anfrage. Wir melden uns in Kürze."
+  };
+
+  var root = document.getElementById("bp-belegungsplan");
+  var MONATE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+  var WT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
+  var heute = new Date(); heute.setHours(0, 0, 0, 0);
+  var state = { belegung: {}, offset: 0, start: null, ende: null, form: { name: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" }, sendet: false, meldung: null };
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function key(d) { return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function parse(s) { var p = String(s).slice(0, 10).split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function naechte(a, b) { return Math.round((b - a) / 86400000); }
+  function deDatum(d) { return pad(d.getDate()) + "." + pad(d.getMonth() + 1) + "." + d.getFullYear(); }
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+  function ladeDaten() {
+    fetch(CONFIG.API_URL)
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.ok && Array.isArray(data.belegung)) {
+          var map = {};
+          data.belegung.forEach(function(dStr) { map[dStr] = "belegt"; });
+          state.belegung = map;
+        }
+        render();
+      })
+      .catch(function() { root.innerHTML = "Fehler beim Laden."; });
+  }
+
+  function render() {
+    var m1 = new Date(heute.getFullYear(), heute.getMonth() + state.offset, 1);
+    var html = '<div class="bp-karte">';
+    html += '<div class="bp-kopf"><button class="bp-nav" ' + (state.offset <= 0 ? 'disabled' : '') + ' id="bp-prev">&#10094;</button><div class="bp-titel">' + MONATE[m1.getMonth()] + ' ' + m1.getFullYear() + '</div><button class="bp-nav" id="bp-next">&#10095;</button></div>';
+
+    // Monat rendern
+    var y = m1.getFullYear(), m = m1.getMonth();
+    var ersterTag = new Date(y, m, 1);
+    var letzterTag = new Date(y, m + 1, 0);
+    var startWochentag = (ersterTag.getDay() + 6) % 7;
+
+    html += '<div class="bp-monat"><div class="bp-wt-leiste">';
+    for (var i = 0; i < 7; i++) html += '<div class="bp-wt">' + WT[i] + '</div>';
+    html += '</div><div class="bp-raster">';
+    for (var i = 0; i < startWochentag; i++) html += '<div class="bp-tag bp-leer"></div>';
+    for (var t = 1; t <= letzterTag.getDate(); t++) {
+      var d = new Date(y, m, t);
+      var kStr = key(d);
+      var status = state.belegung[kStr];
+      var istVergangen = d < heute;
+      var css = "bp-tag";
+      if (istVergangen) css += " bp-vergangen";
+      else if (status === "belegt") css += " bp-belegt";
+      else css += " bp-frei";
+      if (state.start && state.start.getTime() === d.getTime()) css += " bp-auswahl";
+      html += '<button type="button" class="' + css + '" data-datum="' + kStr + '" ' + (istVergangen || status === "belegt" ? 'disabled' : '') + '>' + t + '</button>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="bp-legende"><span><i style="background:#fff"></i> Frei</span><span><i style="background:#c4513a"></i> Belegt</span><span><i style="background:#1f6f78"></i> Auswahl</span></div></div>';
+
+    if (state.start) {
+      var n = state.ende ? naechte(state.start, state.ende) : 0;
+      html += '<div class="bp-form"><h3>' + CONFIG.TEXT_TITEL + '</h3>';
+      html += '<div class="bp-zeitraum"><div><small>Anreise</small><strong>' + deDatum(state.start) + '</strong></div><div><small>Abreise</small><strong>' + (state.ende ? deDatum(state.ende) : 'Wählen...') + '</strong></div></div>';
+      if (state.ende) {
+        html += '<div class="bp-felder"><div><label>Name *</label><input type="text" id="bp-name" value="' + esc(state.form.name) + '"></div>';
+        html += '<div><label>E-Mail *</label><input type="email" id="bp-email" value="' + esc(state.form.email) + '"></div>';
+        html += '<div class="bp-voll"><button class="bp-btn" id="bp-senden">Anfrage senden</button></div></div>';
+      }
+      if (state.meldung) html += '<div class="bp-meldung ' + (state.meldung.ok ? 'bp-ok' : 'bp-err') + '">' + esc(state.meldung.text) + '</div>';
+      html += '</div>';
+    }
+
+    root.innerHTML = html;
+    bindEvents();
+  }
+
+  function bindEvents() {
+    var prev = document.getElementById("bp-prev");
+    var next = document.getElementById("bp-next");
+    if (prev) prev.onclick = function() { state.offset--; render(); };
+    if (next) next.onclick = function() { state.offset++; render(); };
+
+    var buttons = root.querySelectorAll("[data-datum]");
+    buttons.forEach(function(btn) {
+      btn.onclick = function() {
+        var d = parse(this.getAttribute("data-datum"));
+        if (!state.start || state.ende) { state.start = d; state.ende = null; }
+        else if (d > state.start) { state.ende = d; }
+        else { state.start = d; }
+        render();
+      };
+    });
+
+    var inpName = document.getElementById("bp-name");
+    var inpEmail = document.getElementById("bp-email");
+    if (inpName) inpName.oninput = function() { state.form.name = this.value; };
+    if (inpEmail) inpEmail.oninput = function() { state.form.email = this.value; };
+
+    var btnSenden = document.getElementById("bp-senden");
+    if (btnSenden) {
+      btnSenden.onclick = function() {
+        if (!state.form.name || !state.form.email) {
+          state.meldung = { ok: false, text: "Bitte Name und E-Mail eingeben." };
+          render(); return;
+        }
+        fetch(CONFIG.API_URL, {
+          method: "POST",
+          body: JSON.stringify({ anreise: deDatum(state.start), abreise: deDatum(state.ende), name: state.form.name, email: state.form.email, naechte: naechte(state.start, state.ende) })
+        }).then(res => res.json()).then(res => {
+          state.meldung = res.ok ? { ok: true, text: CONFIG.TEXT_DANKE } : { ok: false, text: "Fehler beim Senden." };
+          render();
+        });
+      };
+    }
+  }
+
+  ladeDaten();
+})();
+</script>
+</body>
+</html>
