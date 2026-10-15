@@ -211,33 +211,32 @@
 
     html += '<div class="bp-legende"><span><i style="background:#fff"></i> Frei</span><span><i style="background:#c4513a"></i> Belegt</span><span><i style="background:#1f6f78"></i> Auswahl</span></div></div>';
 
-    if (state.start) {
-      var n = state.ende ? naechte(state.start, state.ende) : 0;
-      html += '<div class="bp-form"><h3>' + CONFIG.TEXT_TITEL + '</h3>';
-      html += '<div class="bp-zeitraum"><div><small>Anreise</small><strong>' + deDatum(state.start) + '</strong></div><div><small>Abreise</small><strong>' + (state.ende ? deDatum(state.ende) : 'Bitte wählen...') + '</strong></div>';
-      if (n > 0) html += '<div><small>Dauer</small><strong>' + n + ' Nächte</strong></div>';
-      html += '</div>';
+    // Formular wird ab hier IMMER permanent angezeigt
+    var n = (state.start && state.ende) ? naechte(state.start, state.ende) : 0;
+    html += '<div class="bp-form"><h3>' + CONFIG.TEXT_TITEL + '</h3>';
+    html += '<div class="bp-zeitraum"><div><small>Anreise</small><strong>' + (state.start ? deDatum(state.start) : 'Bitte wählen...') + '</strong></div><div><small>Abreise</small><strong>' + (state.ende ? deDatum(state.ende) : 'Bitte wählen...') + '</strong></div>';
+    if (n > 0) html += '<div><small>Dauer</small><strong>' + n + ' Nächte</strong></div>';
+    html += '</div>';
 
-      if (n > 0 && n < CONFIG.MIN_NAECHTE) {
-        html += '<div class="bp-hinweis bp-warnung">Mindestaufenthalt: ' + CONFIG.MIN_NAECHTE + ' Nächte.</div>';
-      } else if (state.ende) {
-        html += '<div class="bp-felder">';
-        html += '<div><label>Vorname *</label><input type="text" id="bp-vorname" value="' + esc(state.form.vorname) + '"></div>';
-        html += '<div><label>Nachname *</label><input type="text" id="bp-nachname" value="' + esc(state.form.nachname) + '"></div>';
-        html += '<div class="bp-voll"><label>E-Mail-Adresse *</label><input type="email" id="bp-email" value="' + esc(state.form.email) + '"></div>';
-        html += '<div><label>Erwachsene</label><input type="number" id="bp-erw" min="1" max="' + CONFIG.MAX_PERSONEN + '" value="' + esc(state.form.erwachsene) + '"></div>';
-        html += '<div><label>Kinder</label><input type="number" id="bp-kinder" min="0" max="' + CONFIG.MAX_PERSONEN + '" value="' + esc(state.form.kinder) + '"></div>';
-        html += '<div class="bp-voll"><label>Nachricht / Notizfeld</label><textarea id="bp-nachr">' + esc(state.form.nachricht) + '</textarea></div>';
-        html += '<div class="bp-hp"><input type="text" id="bp-web" value="' + esc(state.form.website) + '"></div>';
-        html += '<div class="bp-voll"><button class="bp-btn" id="bp-senden"' + (state.sendet ? ' disabled' : '') + '>Anfrage absenden</button></div>';
-        html += '</div>';
-      }
-
-      if (state.meldung) {
-        html += '<div class="bp-meldung ' + (state.meldung.ok ? 'bp-ok' : 'bp-err') + '">' + esc(state.meldung.text) + '</div>';
-      }
-      html += '</div>';
+    if (n > 0 && n < CONFIG.MIN_NAECHTE) {
+      html += '<div class="bp-hinweis bp-warnung">Mindestaufenthalt: ' + CONFIG.MIN_NAECHTE + ' Nächte.</div>';
     }
+
+    html += '<div class="bp-felder">';
+    html += '<div><label>Vorname *</label><input type="text" id="bp-vorname" value="' + esc(state.form.vorname) + '"></div>';
+    html += '<div><label>Nachname *</label><input type="text" id="bp-nachname" value="' + esc(state.form.nachname) + '"></div>';
+    html += '<div class="bp-voll"><label>E-Mail-Adresse *</label><input type="email" id="bp-email" value="' + esc(state.form.email) + '"></div>';
+    html += '<div><label>Erwachsene</label><input type="number" id="bp-erw" min="1" max="' + CONFIG.MAX_PERSONEN + '" value="' + esc(state.form.erwachsene) + '"></div>';
+    html += '<div><label>Kinder</label><input type="number" id="bp-kinder" min="0" max="' + CONFIG.MAX_PERSONEN + '" value="' + esc(state.form.kinder) + '"></div>';
+    html += '<div class="bp-voll"><label>Nachricht / Notizfeld</label><textarea id="bp-nachr">' + esc(state.form.nachricht) + '</textarea></div>';
+    html += '<div class="bp-hp"><input type="text" id="bp-web" value="' + esc(state.form.website) + '"></div>';
+    html += '<div class="bp-voll"><button class="bp-btn" id="bp-senden"' + (state.sendet ? ' disabled' : '') + '>Anfrage absenden</button></div>';
+    html += '</div>';
+
+    if (state.meldung) {
+      html += '<div class="bp-meldung ' + (state.meldung.ok ? 'bp-ok' : 'bp-err') + '">' + esc(state.meldung.text) + '</div>';
+    }
+    html += '</div>';
 
     root.innerHTML = html;
     bindEvents();
@@ -286,9 +285,9 @@
         render();
 
         var payload = {
-          anreise: deDatum(state.start),
-          abreise: deDatum(state.ende),
-          naechte: naechte(state.start, state.ende),
+          anreise: state.start ? deDatum(state.start) : "Nicht angegeben",
+          abreise: state.ende ? deDatum(state.ende) : "Nicht angegeben",
+          naechte: state.start && state.ende ? naechte(state.start, state.ende) : 0,
           name: state.form.vorname + " " + state.form.nachname,
           email: state.form.email,
           erwachsene: state.form.erwachsene,
@@ -306,6 +305,7 @@
           if (res.ok) {
             state.meldung = { ok: true, text: CONFIG.TEXT_DANKE };
             state.start = null; state.ende = null;
+            state.form = { vorname: "", nachname: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" };
           } else {
             state.meldung = { ok: false, text: "Fehler beim Senden: " + (res.error || "Unbekannter Fehler") };
           }
