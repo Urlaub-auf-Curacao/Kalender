@@ -114,11 +114,11 @@
     MIN_NAECHTE: 1,
     MAX_PERSONEN: 8,
     TEXT_TITEL: "Unverbindlich anfragen",
-    TEXT_DANKE: "Vielen Dank für Ihre Anfrage. Wir melden uns in Kürze."
+    TEXT_DANKE: "Vielen Dank fÃ¼r Ihre Anfrage. Wir melden uns in KÃ¼rze."
   };
 
   var root = document.getElementById("bp-belegungsplan");
-  var MONATE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
+  var MONATE = ["Januar","Februar","MÃ¤rz","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
   var WT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
   var heute = new Date(); heute.setHours(0, 0, 0, 0);
   var state = { belegung: {}, offset: 0, start: null, ende: null, form: { name: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" }, sendet: false, meldung: null };
@@ -178,7 +178,7 @@
     if (state.start) {
       var n = state.ende ? naechte(state.start, state.ende) : 0;
       html += '<div class="bp-form"><h3>' + CONFIG.TEXT_TITEL + '</h3>';
-      html += '<div class="bp-zeitraum"><div><small>Anreise</small><strong>' + deDatum(state.start) + '</strong></div><div><small>Abreise</small><strong>' + (state.ende ? deDatum(state.ende) : 'Wählen...') + '</strong></div></div>';
+      html += '<div class="bp-zeitraum"><div><small>Anreise</small><strong>' + deDatum(state.start) + '</strong></div><div><small>Abreise</small><strong>' + (state.ende ? deDatum(state.ende) : 'WÃ¤hlen...') + '</strong></div></div>';
       if (state.ende) {
         html += '<div class="bp-felder"><div><label>Name *</label><input type="text" id="bp-name" value="' + esc(state.form.name) + '"></div>';
         html += '<div><label>E-Mail *</label><input type="email" id="bp-email" value="' + esc(state.form.email) + '"></div>';
