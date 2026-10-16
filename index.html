@@ -143,27 +143,16 @@
 
   function ladeDaten() {
     if (!CONFIG.API_URL || CONFIG.API_URL.indexOf("HIER_") === 0) { render(); return; }
-    fetch(CONFIG.API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(res) {
-          state.sendet = false;
-          if (res.ok) {
-            state.meldung = { ok: true, text: CONFIG.TEXT_DANKE };
-            state.start = null; state.ende = null;
-            state.form = { vorname: "", nachname: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" };
-          } else {
-            state.meldung = { ok: false, text: "Fehler vom Server: " + (res.fehler || res.error || "Unbekannt") };
-          }
-          render();
-        })
-        .catch(function(err) {
-          state.sendet = false;
-          state.meldung = { ok: false, text: "Netzwerk- oder CORS-Fehler: " + err };
-          render();
-        });
+    fetch(CONFIG.API_URL)
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.ok && Array.isArray(data.belegung)) {
+          var map = {};
+          data.belegung.forEach(function(dStr) { map[dStr] = "belegt"; });
+          state.belegung = map;
+        }
+        render();
+      })
       .catch(function() { root.innerHTML = "Fehler beim Laden der Belegung."; });
   }
 
@@ -222,7 +211,6 @@
 
     html += '<div class="bp-legende"><span><i style="background:#fff"></i> Frei</span><span><i style="background:#c4513a"></i> Belegt</span><span><i style="background:#1f6f78"></i> Auswahl</span></div></div>';
 
-    // Formular wird ab hier IMMER permanent angezeigt
     var n = (state.start && state.ende) ? naechte(state.start, state.ende) : 0;
     html += '<div class="bp-form"><h3>' + CONFIG.TEXT_TITEL + '</h3>';
     html += '<div class="bp-zeitraum"><div><small>Anreise</small><strong>' + (state.start ? deDatum(state.start) : 'Bitte wählen...') + '</strong></div><div><small>Abreise</small><strong>' + (state.ende ? deDatum(state.ende) : 'Bitte wählen...') + '</strong></div>';
@@ -318,13 +306,13 @@
             state.start = null; state.ende = null;
             state.form = { vorname: "", nachname: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" };
           } else {
-            state.meldung = { ok: false, text: "Fehler beim Senden: " + (res.error || "Unbekannter Fehler") };
+            state.meldung = { ok: false, text: "Fehler vom Server: " + (res.fehler || res.error || "Unbekannt") };
           }
           render();
         })
-        .catch(function() {
+        .catch(function(err) {
           state.sendet = false;
-          state.meldung = { ok: false, text: "Verbindungsfehler. Bitte versuchen Sie es später noch einmal." };
+          state.meldung = { ok: false, text: "Netzwerk- oder CORS-Fehler: " + err };
           render();
         });
       };
@@ -335,4 +323,4 @@
 })();
 </script>
 </body>
-</html>
+</html>  
