@@ -113,10 +113,10 @@
 <script>
 (function () {
   var CONFIG = {
-    API_URL: "https://script.google.com/macros/s/AKfycbwLXOVlY7Mnco5s-jEmB-OvHTs0dFMAg9CSyFDsG8rbOlk_IJuRhqN0-yfTa41BTpYb-Q/exec", // <-- Ihre Google /exec URL eintragen
+    API_URL: "https://script.google.com/macros/s/AKfycbwLXOVlY7Mnco5s-jEmB-OvHTs0dFMAg9CSyFDsG8rbOlk_IJuRhqN0-yfTa41BTpYb-Q/exec",
     MONATE_VORAUS: 18,
-    MIN_NAECHTE: 1,
-    MAX_PERSONEN: 8,
+    MIN_NAECHTE: 7,
+    MAX_PERSONEN: 6,
     TEXT_TITEL: "Unverbindlich anfragen",
     TEXT_DANKE: "Vielen Dank für Ihre Anfrage. Wir melden uns in Kürze bei Ihnen."
   };
@@ -272,7 +272,7 @@
     if (btnSenden) {
       btnSenden.onclick = function() {
         var web = document.getElementById("bp-web");
-        if (web && web.value) return; // Spam-Schutz
+        if (web && web.value) return;
 
         if (!state.form.vorname || !state.form.nachname || !state.form.email) {
           state.meldung = { ok: false, text: "Bitte füllen Sie Vorname, Nachname und E-Mail aus." };
@@ -323,8 +323,8 @@
         });
       };
     }
-   } 
-  
+  }
+
   ladeDaten();
 })();
 </script>
