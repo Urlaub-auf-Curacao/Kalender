@@ -75,14 +75,16 @@
   .bp-tag.bp-frei:hover { border-color: #1f6f78; background: #d6ebec; color: #1f6f78; }
   .bp-leer { visibility: hidden; border: none; background: transparent; }
   .bp-tag.bp-belegt { background: #c4513a; border-color: #c4513a; color: #fff; cursor: not-allowed; }
+  .bp-tag.bp-reserviert { background: #d9822b; border-color: #d9822b; color: #fff; cursor: not-allowed; }
   .bp-tag.bp-geschlossen { background: #999999; border-color: #999999; color: #fff; cursor: not-allowed; }
   .bp-tag.bp-vergangen { background: #f4f2ee; border-color: transparent; color: #b8b3a8; cursor: default; }
   .bp-tag.bp-heute { border-color: #1f6f78; font-weight: 700; }
   .bp-tag.bp-im-bereich { background: #d6ebec; border-color: #1f6f78; color: #1f6f78; }
   .bp-tag.bp-auswahl { background: #1f6f78; border-color: #1f6f78; color: #fff; font-weight: 700; }
-  .bp-legende { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; font-size: 13px; color: #6f6c66; justify-content: center; }
+  .bp-legende { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 15px; font-size: 12px; color: #6f6c66; justify-content: center; }
+  .bp-legende-reserviert { background: #d9822b; width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid #d9d4cb; }
   .bp-legende-geschlossen { background: #999999; width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid #d9d4cb; }
-  .bp-legende span { display: inline-flex; align-items: center; gap: 6px; }
+  .bp-legende span { display: inline-flex; align-items: center; gap: 4px; }
   .bp-legende i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid #d9d4cb; }
   .bp-form { margin-top: 15px; background: #faf8f4; border: 1px solid #e6e1d8; border-radius: 10px; padding: 15px; }
   .bp-form h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #2b2a28; }
@@ -151,7 +153,6 @@
         if (data.ok && Array.isArray(data.belegung)) {
           var map = {};
           data.belegung.forEach(function(item) {
-            // Unterstützt sowohl alten Stil (Array aus Strings) als auch Objekte mit Status
             if (typeof item === 'string') {
               map[item] = "belegt";
             } else if (item && item.datum) {
@@ -167,7 +168,7 @@
 
   function klickTag(d) {
     var status = state.belegung[key(d)];
-    if (d < heute || status === "belegt" || status === "geschlossen") return;
+    if (d < heute || status === "belegt" || status === "geschlossen" || status === "reserviert") return;
     if (!state.start || (state.start && state.ende)) {
       state.start = d; state.ende = null; state.meldung = null;
     } else if (state.start && !state.ende) {
@@ -178,7 +179,7 @@
         var curr = plusTage(state.start, 1);
         while (curr < d) {
           var st = state.belegung[key(curr)];
-          if (st === "belegt" || st === "geschlossen") { blockiert = true; break; }
+          if (st === "belegt" || st === "geschlossen" || st === "reserviert") { blockiert = true; break; }
           curr = plusTage(curr, 1);
         }
         if (blockiert) { state.start = d; state.ende = null; }
@@ -211,6 +212,7 @@
       var css = "bp-tag";
       if (istVergangen) css += " bp-vergangen";
       else if (status === "belegt") css += " bp-belegt";
+      else if (status === "reserviert") css += " bp-reserviert";
       else if (status === "geschlossen") css += " bp-geschlossen";
       else css += " bp-frei";
       if (istHeute) css += " bp-heute";
@@ -218,12 +220,12 @@
       if (state.start && state.ende && d > state.start && d < state.ende) css += " bp-im-bereich";
       if (state.start && state.ende && state.ende.getTime() === d.getTime()) css += " bp-auswahl";
       
-      var istGesperrt = istVergangen || status === "belegt" || status === "geschlossen";
+      var istGesperrt = istVergangen || status === "belegt" || status === "geschlossen" || status === "reserviert";
       html += '<button type="button" class="' + css + '" data-datum="' + kStr + '" ' + (istGesperrt ? 'disabled' : '') + '>' + t + '</button>';
     }
     html += '</div></div>';
 
-    html += '<div class="bp-legende"><span><i style="background:#fff"></i> Frei</span><span><i style="background:#c4513a"></i> Belegt</span><span><i class="bp-legende-geschlossen"></i> Geschlossen</span><span><i style="background:#1f6f78"></i> Auswahl</span></div></div>';
+    html += '<div class="bp-legende"><span><i style="background:#fff"></i> Frei</span><span><i style="background:#c4513a"></i> Belegt</span><span><i class="bp-legende-reserviert"></i> Reserviert</span><span><i class="bp-legende-geschlossen"></i> Geschlossen</span><span><i style="background:#1f6f78"></i> Auswahl</span></div></div>';
 
     var n = (state.start && state.ende) ? naechte(state.start, state.ende) : 0;
     html += '<div class="bp-form"><h3>' + CONFIG.TEXT_TITEL + '</h3>';
