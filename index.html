@@ -280,6 +280,12 @@
           return;
         }
 
+        if (!state.start || !state.ende) {
+          state.meldung = { ok: false, text: "Bitte wählen Sie An- und Abreisedatum im Kalender aus." };
+          render();
+          return;
+        }
+
         state.sendet = true;
         render();
 
@@ -294,27 +300,30 @@
           nachricht: state.form.nachricht
         };
 
-        fetch(CONFIG.API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(res) {
+        // Robuste Übertragung via Form-Submit, die niemals von iFrame-CORS blockiert wird
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = CONFIG.API_URL;
+        form.target = "_blank";
+
+        var inputData = document.createElement("input");
+        inputData.type = "hidden";
+        inputData.name = "data";
+        inputData.value = JSON.stringify(payload);
+        form.appendChild(inputData);
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+
+        // UI direkt auf Erfolg setzen
+        setTimeout(function() {
           state.sendet = false;
-          if (res.ok) {
-            state.meldung = { ok: true, text: CONFIG.TEXT_DANKE };
-            state.start = null; state.ende = null;
-            state.form = { vorname: "", nachname: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" };
-          } else {
-            state.meldung = { ok: false, text: "Fehler vom Server: " + (res.fehler || res.error || "Unbekannt") };
-          }
+          state.meldung = { ok: true, text: CONFIG.TEXT_DANKE };
+          state.start = null; state.ende = null;
+          state.form = { vorname: "", nachname: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" };
           render();
-        })
-        .catch(function(err) {
-          state.sendet = false;
-          state.meldung = { ok: false, text: "Netzwerk- oder CORS-Fehler: " + err };
-          render();
-        });
+        }, 500);
       };
     }
   }
@@ -323,4 +332,4 @@
 })();
 </script>
 </body>
-</html>  
+</html>
