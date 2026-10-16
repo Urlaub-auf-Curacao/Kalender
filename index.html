@@ -2,76 +2,20 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #2b2a28;
-    background: transparent;
-    margin: 0;
-    padding: 10px;
-    box-sizing: border-box;
-  }
-  .bp-karte {
-    background: #faf8f4;
-    border: 1px solid #e6e1d8;
-    border-radius: 12px;
-    padding: 20px;
-    max-width: 420px;
-    margin: 0 auto;
-    box-sizing: border-box;
-  }
-  .bp-kopf {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  }
-  .bp-nav {
-    background: #fff;
-    border: 1px solid #d9d4cb;
-    color: #2b2a28;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .bp-nav:hover:not(:disabled) {
-    border-color: #1f6f78;
-    color: #1f6f78;
-    background: #d6ebec;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #2b2a28; background: transparent; margin: 0; padding: 10px; box-sizing: border-box; }
+  .bp-karte { background: #faf8f4; border: 1px solid #e6e1d8; border-radius: 12px; padding: 20px; max-width: 420px; margin: 0 auto; box-sizing: border-box; }
+  .bp-kopf { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+  .bp-nav { background: #fff; border: 1px solid #d9d4cb; color: #2b2a28; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .bp-nav:hover:not(:disabled) { border-color: #1f6f78; color: #1f6f78; background: #d6ebec; }
   .bp-nav:disabled { opacity: 0.3; cursor: default; }
-  .bp-titel {
-    font-weight: 600;
-    font-size: 16px;
-    text-align: center;
-    flex: 1;
-  }
+  .bp-titel { font-weight: 600; font-size: 16px; text-align: center; flex: 1; }
   .bp-monat { background: #fff; border: 1px solid #e6e1d8; border-radius: 8px; padding: 15px; }
-  .bp-monatsname { font-weight: 600; text-align: center; margin: 0 0 12px; font-size: 15px; color: #1f6f78; }
   .bp-wt-leiste { display: flex; justify-content: space-between; margin-bottom: 6px; }
   .bp-wt { font-size: 11px; text-transform: uppercase; color: #6f6c66; text-align: center; flex: 1; font-weight: 600; }
   .bp-raster { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-  .bp-tag {
-    aspect-ratio: 1 / 1;
-    border: 1px solid #d9d4cb;
-    background: #ffffff;
-    color: #2b2a28;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: 500;
-    padding: 0;
-    margin: 0;
-    width: 100%;
-  }
+  .bp-tag { aspect-ratio: 1 / 1; border: 1px solid #d9d4cb; background: #ffffff; color: #2b2a28; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 500; padding: 0; margin: 0; width: 100%; }
   .bp-tag.bp-frei:hover { border-color: #1f6f78; background: #d6ebec; color: #1f6f78; }
   .bp-leer { visibility: hidden; border: none; background: transparent; }
   .bp-tag.bp-belegt { background: #c4513a; border-color: #c4513a; color: #fff; cursor: not-allowed; }
@@ -82,24 +26,20 @@
   .bp-tag.bp-im-bereich { background: #d6ebec; border-color: #1f6f78; color: #1f6f78; }
   .bp-tag.bp-auswahl { background: #1f6f78; border-color: #1f6f78; color: #fff; font-weight: 700; }
   .bp-legende { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 15px; font-size: 12px; color: #6f6c66; justify-content: center; }
-  .bp-legende-reserviert { background: #d9822b; width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid #d9d4cb; }
-  .bp-legende-geschlossen { background: #999999; width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid #d9d4cb; }
   .bp-legende span { display: inline-flex; align-items: center; gap: 4px; }
   .bp-legende i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; border: 1px solid #d9d4cb; }
   .bp-form { margin-top: 15px; background: #faf8f4; border: 1px solid #e6e1d8; border-radius: 10px; padding: 15px; }
-  .bp-form h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; color: #2b2a28; }
+  .bp-form h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
   .bp-zeitraum { display: flex; gap: 10px; margin-bottom: 12px; }
   .bp-zeitraum div { flex: 1; background: #fff; border: 1px solid #e6e1d8; border-radius: 6px; padding: 8px 10px; }
   .bp-zeitraum small { display: block; font-size: 10px; text-transform: uppercase; color: #6f6c66; margin-bottom: 2px; }
-  .bp-zeitraum strong { font-size: 13px; color: #2b2a28; }
+  .bp-zeitraum strong { font-size: 13px; }
   .bp-felder { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .bp-voll { grid-column: 1 / -1; }
-  label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; color: #2b2a28; }
-  input[type=text], input[type=email], input[type=number], textarea {
-    width: 100%; font: inherit; font-size: 13px; color: #2b2a28; background: #fff; border: 1px solid #d9d4cb; border-radius: 6px; padding: 8px; box-sizing: border-box;
-  }
+  label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  input[type=text], input[type=email], select, textarea { width: 100%; font: inherit; font-size: 13px; color: #2b2a28; background: #fff; border: 1px solid #d9d4cb; border-radius: 6px; padding: 8px; box-sizing: border-box; }
   textarea { min-height: 70px; resize: vertical; }
-  input:focus, textarea:focus { outline: none; border-color: #1f6f78; box-shadow: 0 0 0 2px rgba(31,111,120,0.15); }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: #1f6f78; box-shadow: 0 0 0 2px rgba(31,111,120,0.15); }
   .bp-hp { position: absolute !important; left: -9999px !important; width: 1px; height: 1px; overflow: hidden; }
   .bp-btn { background: #1f6f78; color: #fff; border: none; border-radius: 6px; padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px; }
   .bp-btn:hover:not(:disabled) { background: #17535b; }
@@ -107,7 +47,12 @@
   .bp-meldung { margin-top: 10px; padding: 10px; border-radius: 6px; font-size: 13px; }
   .bp-meldung.bp-ok { background: #e4f1e6; color: #1d5b2b; }
   .bp-meldung.bp-err { background: #f8e3de; color: #8c2f1c; }
-  .bp-hinweis.bp-warnung { color: #c4513a; font-weight: 600; font-size: 12px; margin-top: 6px; }
+  .bp-preis { background: #fff; padding: 12px 14px; border-radius: 8px; border-left: 4px solid #1f6f78; font-size: 13px; }
+  .bp-preis div { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 5px; }
+  .bp-preis hr { border: none; border-top: 1px solid #e6e1d8; margin: 8px 0; }
+  .bp-preis .bp-summe { font-size: 16px; font-weight: 700; color: #1f6f78; margin: 0; }
+  .bp-preis .bp-warnung { color: #c4513a; font-weight: 600; display: block; margin: 0; }
+  .bp-preis .bp-leise { color: #6f6c66; display: block; margin: 0; }
 </style>
 </head>
 <body>
@@ -121,8 +66,14 @@
     MONATE_VORAUS: 18,
     MIN_NAECHTE: 7,
     MAX_PERSONEN: 6,
-    MAX_KINDER: 4,
-    TEXT_TITEL: "Unverbindlich anfragen",
+    MAX_KINDER: 3,
+    // Preise
+    PREIS_BASIS: 85,        // pro Nacht, inkl. BASIS_PERSONEN
+    BASIS_PERSONEN: 2,
+    PREIS_EXTRA: 12.5,      // pro weiterer Person und Nacht
+    REINIGUNG: 75,
+    STEUER: 0.07,           // wird auf (Übernachtungen + Endreinigung) berechnet
+    TEXT_TITEL: "Preis berechnen & unverbindlich anfragen",
     TEXT_DANKE: "Vielen Dank für Ihre Anfrage. Wir melden uns in Kürze bei Ihnen."
   };
 
@@ -130,11 +81,9 @@
   var MONATE = ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"];
   var WT = ["Mo","Di","Mi","Do","Fr","Sa","So"];
   var heute = new Date(); heute.setHours(0, 0, 0, 0);
-  
+
   var state = {
-    belegung: {}, offset: 0,
-    start: null, ende: null,
-    sendet: false, meldung: null,
+    belegung: {}, offset: 0, start: null, ende: null, sendet: false, meldung: null,
     form: { vorname: "", nachname: "", email: "", erwachsene: "2", kinder: "0", nachricht: "", website: "" }
   };
 
@@ -145,88 +94,112 @@
   function naechte(a, b) { return Math.round((b - a) / 86400000); }
   function deDatum(d) { return pad(d.getDate()) + "." + pad(d.getMonth() + 1) + "." + d.getFullYear(); }
   function esc(s) { return String(s || "").replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function eur(x) { return x.toFixed(2).replace(".", ",") + " €"; }
+  function gesperrt(st) { return st === "belegt" || st === "geschlossen" || st === "reserviert"; }
 
+  // ---------- Preisberechnung ----------
+  function berechne() {
+    if (!state.start || !state.ende) return null;
+    var n = naechte(state.start, state.ende);
+    var gaeste = parseInt(state.form.erwachsene, 10) || 1;
+    var proNacht = CONFIG.PREIS_BASIS + Math.max(0, gaeste - CONFIG.BASIS_PERSONEN) * CONFIG.PREIS_EXTRA;
+    var uebernachtung = proNacht * n;
+    var zwischen = uebernachtung + CONFIG.REINIGUNG;
+    var steuer = zwischen * CONFIG.STEUER;
+    return { n: n, proNacht: proNacht, uebernachtung: uebernachtung, steuer: steuer, gesamt: zwischen + steuer };
+  }
+
+  function preisHtml() {
+    var p = berechne();
+    if (!p) return '<span class="bp-leise">Bitte Anreise und Abreise im Kalender wählen, dann erscheint der Preis.</span>';
+    if (p.n < CONFIG.MIN_NAECHTE) return '<span class="bp-warnung">Der Mindestaufenthalt beträgt ' + CONFIG.MIN_NAECHTE + ' Nächte (aktuell: ' + p.n + ').</span>';
+    return '<div><span>Nächte</span><strong>' + p.n + ' × ' + eur(p.proNacht) + '</strong></div>' +
+      '<div><span>Übernachtungen</span><strong>' + eur(p.uebernachtung) + '</strong></div>' +
+      '<div><span>Endreinigung</span><strong>' + eur(CONFIG.REINIGUNG) + '</strong></div>' +
+      '<div><span>Touristensteuer (' + Math.round(CONFIG.STEUER * 100) + '%)</span><strong>' + eur(p.steuer) + '</strong></div>' +
+      '<hr><div class="bp-summe"><span>Gesamtsumme</span><span>' + eur(p.gesamt) + '</span></div>';
+  }
+
+  function updatePreis() {
+    var el = document.getElementById("bp-preis");
+    if (el) el.innerHTML = preisHtml();
+    sendHeight();
+  }
+
+  function optionen(von, bis, aktuell, label1, labelN) {
+    var h = "";
+    for (var i = von; i <= bis; i++) h += '<option value="' + i + '"' + (String(i) === String(aktuell) ? ' selected' : '') + '>' + i + ' ' + (i === 1 ? label1 : labelN) + '</option>';
+    return h;
+  }
+
+  // ---------- Daten laden ----------
   function ladeDaten() {
     if (!CONFIG.API_URL || CONFIG.API_URL.indexOf("HIER_") === 0) { render(); return; }
     fetch(CONFIG.API_URL)
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
         if (data.ok && Array.isArray(data.belegung)) {
           var map = {};
-          data.belegung.forEach(function(item) {
-            if (typeof item === 'string') {
-              map[item] = "belegt";
-            } else if (item && item.datum) {
-              map[item.datum] = item.status || "belegt";
-            }
+          data.belegung.forEach(function (item) {
+            if (typeof item === "string") map[item] = "belegt";
+            else if (item && item.datum) map[item.datum] = item.status || "belegt";
           });
           state.belegung = map;
         }
         render();
       })
-      .catch(function() { root.innerHTML = "Fehler beim Laden der Belegung."; });
+      .catch(function () { root.innerHTML = "Fehler beim Laden der Belegung."; });
   }
 
+  // ---------- Kalender-Klick ----------
   function klickTag(d) {
-    var status = state.belegung[key(d)];
-    if (d < heute || status === "belegt" || status === "geschlossen" || status === "reserviert") return;
+    if (d < heute || gesperrt(state.belegung[key(d)])) return;
     if (!state.start || (state.start && state.ende)) {
       state.start = d; state.ende = null; state.meldung = null;
-    } else if (state.start && !state.ende) {
-      if (d <= state.start) {
-        state.start = d;
-      } else {
-        var blockiert = false;
-        var curr = plusTage(state.start, 1);
-        while (curr < d) {
-          var st = state.belegung[key(curr)];
-          if (st === "belegt" || st === "geschlossen" || st === "reserviert") { blockiert = true; break; }
-          curr = plusTage(curr, 1);
-        }
-        if (blockiert) { state.start = d; state.ende = null; }
-        else { state.ende = d; }
+    } else if (d <= state.start) {
+      state.start = d;
+    } else {
+      var blockiert = false, curr = plusTage(state.start, 1);
+      while (curr < d) {
+        if (gesperrt(state.belegung[key(curr)])) { blockiert = true; break; }
+        curr = plusTage(curr, 1);
       }
+      if (blockiert) { state.start = d; state.ende = null; } else { state.ende = d; }
     }
     render();
   }
 
+  // ---------- Darstellung ----------
   function render() {
     var m1 = new Date(heute.getFullYear(), heute.getMonth() + state.offset, 1);
     var html = '<div class="bp-karte">';
     html += '<div class="bp-kopf"><button class="bp-nav" ' + (state.offset <= 0 ? 'disabled' : '') + ' id="bp-prev">&#10094;</button><div class="bp-titel">' + MONATE[m1.getMonth()] + ' ' + m1.getFullYear() + '</div><button class="bp-nav" ' + (state.offset >= CONFIG.MONATE_VORAUS - 1 ? 'disabled' : '') + ' id="bp-next">&#10095;</button></div>';
 
     var y = m1.getFullYear(), m = m1.getMonth();
-    var ersterTag = new Date(y, m, 1);
-    var letzterTag = new Date(y, m + 1, 0);
-    var startWochentag = (ersterTag.getDay() + 6) % 7;
+    var startWochentag = (new Date(y, m, 1).getDay() + 6) % 7;
+    var tageImMonat = new Date(y, m + 1, 0).getDate();
 
     html += '<div class="bp-monat"><div class="bp-wt-leiste">';
     for (var i = 0; i < 7; i++) html += '<div class="bp-wt">' + WT[i] + '</div>';
     html += '</div><div class="bp-raster">';
     for (var i = 0; i < startWochentag; i++) html += '<div class="bp-tag bp-leer"></div>';
-    for (var t = 1; t <= letzterTag.getDate(); t++) {
-      var d = new Date(y, m, t);
-      var kStr = key(d);
-      var status = state.belegung[kStr];
-      var istVergangen = d < heute;
-      var istHeute = d.getTime() === heute.getTime();
-      var css = "bp-tag";
-      if (istVergangen) css += " bp-vergangen";
+    for (var t = 1; t <= tageImMonat; t++) {
+      var d = new Date(y, m, t), kStr = key(d), status = state.belegung[kStr];
+      var vergangen = d < heute, css = "bp-tag";
+      if (vergangen) css += " bp-vergangen";
       else if (status === "belegt") css += " bp-belegt";
       else if (status === "reserviert") css += " bp-reserviert";
       else if (status === "geschlossen") css += " bp-geschlossen";
       else css += " bp-frei";
-      if (istHeute) css += " bp-heute";
+      if (d.getTime() === heute.getTime()) css += " bp-heute";
       if (state.start && !state.ende && state.start.getTime() === d.getTime()) css += " bp-auswahl";
       if (state.start && state.ende && d > state.start && d < state.ende) css += " bp-im-bereich";
-      if (state.start && state.ende && state.ende.getTime() === d.getTime()) css += " bp-auswahl";
-      
-      var istGesperrt = istVergangen || status === "belegt" || status === "geschlossen" || status === "reserviert";
-      html += '<button type="button" class="' + css + '" data-datum="' + kStr + '" ' + (istGesperrt ? 'disabled' : '') + '>' + t + '</button>';
+      if (state.start && state.ende && (state.ende.getTime() === d.getTime() || state.start.getTime() === d.getTime())) css += " bp-auswahl";
+      html += '<button type="button" class="' + css + '" data-datum="' + kStr + '" ' + (vergangen || gesperrt(status) ? 'disabled' : '') + '>' + t + '</button>';
     }
     html += '</div></div>';
 
-    html += '<div class="bp-legende"><span><i style="background:#fff"></i> Frei</span><span><i style="background:#c4513a"></i> Belegt</span><span><i class="bp-legende-reserviert"></i> Reserviert</span><span><i class="bp-legende-geschlossen"></i> Geschlossen</span><span><i style="background:#1f6f78"></i> Auswahl</span></div></div>';
+    html += '<div class="bp-legende"><span><i style="background:#fff"></i> Frei</span><span><i style="background:#c4513a"></i> Belegt</span><span><i style="background:#d9822b"></i> Reserviert</span><span><i style="background:#999"></i> Geschlossen</span><span><i style="background:#1f6f78"></i> Auswahl</span></div></div>';
 
     var n = (state.start && state.ende) ? naechte(state.start, state.ende) : 0;
     html += '<div class="bp-form"><h3>' + CONFIG.TEXT_TITEL + '</h3>';
@@ -234,95 +207,72 @@
     if (n > 0) html += '<div><small>Dauer</small><strong>' + n + ' Nächte</strong></div>';
     html += '</div>';
 
-    if (n > 0 && n < CONFIG.MIN_NAECHTE) {
-      html += '<div class="bp-hinweis bp-warnung">Mindestaufenthalt: ' + CONFIG.MIN_NAECHTE + ' Nächte.</div>';
-    }
-
     html += '<div class="bp-felder">';
+    html += '<div><label>Gäste ab 2 Jahren</label><select id="bp-erw">' + optionen(1, CONFIG.MAX_PERSONEN, state.form.erwachsene, "Person", "Personen") + '</select></div>';
+    html += '<div><label>Kinder unter 2 (kostenlos)</label><select id="bp-kinder">' + optionen(0, CONFIG.MAX_KINDER, state.form.kinder, "Kind", "Kinder") + '</select></div>';
+    html += '<div class="bp-voll"><div class="bp-preis" id="bp-preis">' + preisHtml() + '</div></div>';
     html += '<div><label>Vorname *</label><input type="text" id="bp-vorname" value="' + esc(state.form.vorname) + '"></div>';
     html += '<div><label>Nachname *</label><input type="text" id="bp-nachname" value="' + esc(state.form.nachname) + '"></div>';
     html += '<div class="bp-voll"><label>E-Mail-Adresse *</label><input type="email" id="bp-email" value="' + esc(state.form.email) + '"></div>';
-    html += '<div><label>Erwachsene</label><input type="number" id="bp-erw" min="1" max="' + CONFIG.MAX_PERSONEN + '" value="' + esc(state.form.erwachsene) + '"></div>';
-    html += '<div><label>Kinder</label><input type="number" id="bp-kinder" min="0" max="' + CONFIG.MAX_PERSONEN + '" value="' + esc(state.form.kinder) + '"></div>';
     html += '<div class="bp-voll"><label>Nachricht / Notizfeld</label><textarea id="bp-nachr">' + esc(state.form.nachricht) + '</textarea></div>';
     html += '<div class="bp-hp"><input type="text" id="bp-web" value="' + esc(state.form.website) + '"></div>';
     html += '<div class="bp-voll"><button class="bp-btn" id="bp-senden"' + (state.sendet ? ' disabled' : '') + '>Anfrage absenden</button></div>';
     html += '</div>';
-
-    if (state.meldung) {
-      html += '<div class="bp-meldung ' + (state.meldung.ok ? 'bp-ok' : 'bp-err') + '">' + esc(state.meldung.text) + '</div>';
-    }
+    if (state.meldung) html += '<div class="bp-meldung ' + (state.meldung.ok ? 'bp-ok' : 'bp-err') + '">' + esc(state.meldung.text) + '</div>';
     html += '</div>';
 
     root.innerHTML = html;
     bindEvents();
+    sendHeight();
   }
 
   function bindEvents() {
-    var prev = document.getElementById("bp-prev");
-    var next = document.getElementById("bp-next");
-    if (prev) prev.onclick = function() { state.offset--; render(); };
-    if (next) next.onclick = function() { state.offset++; render(); };
+    var $ = function (id) { return document.getElementById(id); };
+    if ($("bp-prev")) $("bp-prev").onclick = function () { state.offset--; render(); };
+    if ($("bp-next")) $("bp-next").onclick = function () { state.offset++; render(); };
 
     var buttons = root.querySelectorAll("[data-datum]");
     for (var i = 0; i < buttons.length; i++) {
-      buttons[i].onclick = function() {
-        klickTag(parse(this.getAttribute("data-datum")));
-      };
+      buttons[i].onclick = function () { klickTag(parse(this.getAttribute("data-datum"))); };
     }
 
-    var vName = document.getElementById("bp-vorname");
-    var nName = document.getElementById("bp-nachname");
-    var email = document.getElementById("bp-email");
-    var erw = document.getElementById("bp-erw");
-    var kind = document.getElementById("bp-kinder");
-    var nachr = document.getElementById("bp-nachr");
-    var btnSenden = document.getElementById("bp-senden");
+    $("bp-vorname").oninput = function () { state.form.vorname = this.value; };
+    $("bp-nachname").oninput = function () { state.form.nachname = this.value; };
+    $("bp-email").oninput = function () { state.form.email = this.value; };
+    $("bp-nachr").oninput = function () { state.form.nachricht = this.value; };
+    $("bp-erw").onchange = function () { state.form.erwachsene = this.value; updatePreis(); };
+    $("bp-kinder").onchange = function () { state.form.kinder = this.value; };
 
-    if (vName) vName.oninput = function() { state.form.vorname = this.value; };
-    if (nName) nName.oninput = function() { state.form.nachname = this.value; };
-    if (email) email.oninput = function() { state.form.email = this.value; };
-    if (erw) erw.oninput = function() { state.form.erwachsene = this.value; };
-    if (kind) kind.oninput = function() { state.form.kinder = this.value; };
-    if (nachr) nachr.oninput = function() { state.form.nachricht = this.value; };
+    $("bp-senden").onclick = function () {
+      if ($("bp-web") && $("bp-web").value) return;
+      if (!state.form.vorname || !state.form.nachname || !state.form.email) {
+        state.meldung = { ok: false, text: "Bitte füllen Sie Vorname, Nachname und E-Mail aus." }; render(); return;
+      }
+      if (!state.start || !state.ende) {
+        state.meldung = { ok: false, text: "Bitte wählen Sie An- und Abreisedatum im Kalender aus." }; render(); return;
+      }
+      var p = berechne();
+      if (p.n < CONFIG.MIN_NAECHTE) {
+        state.meldung = { ok: false, text: "Der Mindestaufenthalt beträgt " + CONFIG.MIN_NAECHTE + " Nächte." }; render(); return;
+      }
 
-    if (btnSenden) {
-      btnSenden.onclick = function() {
-        var web = document.getElementById("bp-web");
-        if (web && web.value) return;
+      state.sendet = true; render();
 
-        if (!state.form.vorname || !state.form.nachname || !state.form.email) {
-          state.meldung = { ok: false, text: "Bitte füllen Sie Vorname, Nachname und E-Mail aus." };
-          render();
-          return;
-        }
+      var payload = {
+        anreise: deDatum(state.start),
+        abreise: deDatum(state.ende),
+        naechte: p.n,
+        name: state.form.vorname + " " + state.form.nachname,
+        email: state.form.email,
+        erwachsene: state.form.erwachsene,
+        kinder: state.form.kinder,
+        nachricht: state.form.nachricht,
+        gesamtpreis: eur(p.gesamt)
+      };
 
-        if (!state.start || !state.ende) {
-          state.meldung = { ok: false, text: "Bitte wählen Sie An- und Abreisedatum im Kalender aus." };
-          render();
-          return;
-        }
-
-        state.sendet = true;
-        render();
-
-        var payload = {
-          anreise: state.start ? deDatum(state.start) : "Nicht angegeben",
-          abreise: state.ende ? deDatum(state.ende) : "Nicht angegeben",
-          naechte: state.start && state.ende ? naechte(state.start, state.ende) : 0,
-          name: state.form.vorname + " " + state.form.nachname,
-          email: state.form.email,
-          erwachsene: state.form.erwachsene,
-          kinder: state.form.kinder,
-          nachricht: state.form.nachricht
-        };
-
-        fetch(CONFIG.API_URL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        })
-        .then(function(res) { return res.json(); })
-        .then(function(res) {
+      fetch(CONFIG.API_URL, { method: "POST", body: JSON.stringify(payload) })
+        .then(function (res) { return res.json(); })
+        .then(function (res) {
           state.sendet = false;
           if (res.ok) {
             state.meldung = { ok: true, text: CONFIG.TEXT_DANKE };
@@ -333,13 +283,17 @@
           }
           render();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           state.sendet = false;
           state.meldung = { ok: false, text: "Netzwerk- oder CORS-Fehler: " + err };
           render();
         });
-      };
-    }
+    };
+  }
+
+  // Meldet die Seitenhöhe an die einbettende Webseite (optional, für automatische iframe-Höhe)
+  function sendHeight() {
+    try { parent.postMessage({ bpHeight: document.documentElement.scrollHeight }, "*"); } catch (e) {}
   }
 
   ladeDaten();
